@@ -25,7 +25,7 @@ fi
 yum update -y audit
 
 # Installing dependencies
-yum install -y curl memcached rsync sqlite xfsprogs git-core xinetd python-setuptools python-coverage python-devel python-nose python-simplejson pyxattr python-eventlet python-greenlet python-paste-deploy python-netifaces python-pip python-dns python-mock pyxattr rsyslog gcc
+yum install -y curl memcached rsync sqlite xfsprogs git-core xinetd python-setuptools python-coverage python-devel python-nose python-simplejson pyxattr python-eventlet python-greenlet python-paste-deploy python-netifaces python-pip python-dns python-mock pyxattr rsyslog gcc libffi libffi-devel
 
 # Create and use a loop-back device for storage
 truncate -s 1GB /srv/swift-disk
@@ -73,12 +73,10 @@ git clone https://github.com/openstack/swift.git
 cd swift
 if [ $version == "grizzly" ]; then
         git checkout stable/grizzly
-        sed -i '/^xattr/d' tools/pip-requires # Unable to install xattr via pip - workaround
         pip install -r tools/pip-requires
         pip install -r tools/test-requires
 elif [ $version == "havana" ]; then
-        git checkout master
-        sed -i '/^xattr/d' requirements.txt # Unable to install xattr via pip - workaround
+        git checkout stable/havana
         pip install -r requirements.txt
         pip install -r test-requirements.txt
 fi
