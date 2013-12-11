@@ -8,16 +8,16 @@ if [ $EUID -ne 0 ]; then
 fi
 
 if [ $# -ne 1 ]; then
-        echo -e "USAGE:\nsudo $0 <swift-version>"
-        echo -e "<swift-version> can be grizzly or havana"
+        echo -e "USAGE:\nsudo $0 <swift-branch>"
+        echo -e "<swift-branch> can be grizzly or havana or master"
         exit 1
 fi
 
-if [[ $1 == "grizzly" || $1 == "havana" ]]; then
+if [[ $1 == "grizzly" || $1 == "havana"  || $1 == "master" ]]; then
         version=$1
 else
-        echo -e "Invalid swift version as argument. Choosing grizzly..."
-        version="grizzly"
+        echo -e "Invalid swift version as argument. Choosing havana..."
+        version="havana"
 fi
 
 
@@ -77,6 +77,10 @@ if [ $version == "grizzly" ]; then
         pip install -r tools/test-requires
 elif [ $version == "havana" ]; then
         git checkout stable/havana
+        pip install -r requirements.txt
+        pip install -r test-requirements.txt
+elif [ $version == "master" ]; then
+        git checkout master
         pip install -r requirements.txt
         pip install -r test-requirements.txt
 fi

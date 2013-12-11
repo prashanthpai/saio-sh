@@ -8,17 +8,17 @@ if [ $EUID -ne 0 ]; then
 fi
 
 if [ $# -ne 2 ]; then
-        echo -e "USAGE:\n       sudo ./g4s.sh <ip> <grizzly/havana>"
-        echo -e "EXAMPLE:\n       sudo ./g4s.sh 192.168.56.101 grizzly"
-	echo -e "\nSpecify ip address of this machine (not localhost/127.0.0.1) and swift version to install."
-        exit 1
+    echo -e "USAGE:\n       sudo $0 <ip> <grizzly/havana/master>"
+    echo -e "EXAMPLE:\n       sudo $0 192.168.56.101 havana"
+    echo -e "\nSpecify ip address of this machine (not localhost/127.0.0.1) and swift version to install."
+    exit 1
 fi
 
-if [[ $2 == "grizzly" || $2 == "havana" ]]; then
-        version=$2
+if [[ $2 == "grizzly" || $2 == "havana" || $2 == "master" ]]; then
+    version=$2
 else
-        echo -e "Invalid swift version as argument. Choosing grizzly..."
-        version="grizzly"
+    echo -e "Invalid swift version as argument. Choosing havana..."
+    version="havana"
 fi
 
 # Host IP Address
@@ -48,12 +48,14 @@ git clone https://github.com/openstack/swift.git
 cd swift
 if [ $version == "grizzly" ]; then
         git checkout stable/grizzly
-        sed -i '/^xattr/d' tools/pip-requires # Unable to install xattr via pip - workaround
         pip install -r tools/pip-requires
         pip install -r tools/test-requires
 elif [ $version == "havana" ]; then
         git checkout master
-        sed -i '/^xattr/d' requirements.txt # Unable to install xattr via pip - workaround
+        pip install -r requirements.txt
+        pip install -r test-requirements.txt
+elif [ $version == "master" ]; then
+        git checkout master
         pip install -r requirements.txt
         pip install -r test-requirements.txt
 fi
